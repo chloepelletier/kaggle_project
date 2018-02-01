@@ -1,6 +1,8 @@
 # kaggle_project
 Subject : Swimming Pool Visitor Forecasting / Prévision de la fréquentation d’une piscine
+
 Kaggle Link : https://www.kaggle.com/c/swimming-pool-visitor-forecasting
+
 
 L’objectif principal et final du projet est de prédire le nombre de visiteurs quotidiens à la piscine de Nettebad à Osnabrück, en Allemagne ( piscine intérieure et extérieure, en excluant les visiteurs du sauna, des écoles et des cours de natation ) . Cela sur la période d’une année.
 Le projet sera partitionné comme demandé dans l’énoncé et aura comme jalons
