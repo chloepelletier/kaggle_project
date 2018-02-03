@@ -1,6 +1,7 @@
-netteBad = pd.read_csv('data/raw/nettebad_train_set.csv', sep=';')
-weather_dwd = pd.read_csv('data/raw/weather_dwd_train_set.csv', sep=';')
-weather_osnabrueck = pd.read_csv('data/raw/weather_uni_osnabrueck_train_set.csv', sep=';')
+netteBad = pd.read_csv('../../data/raw/nettebad_train_set.csv', sep=';')
+weather_dwd = pd.read_csv('../../data/raw/weather_dwd_train_set.csv', sep=';')
+weather_osnabrueck = pd.read_csv('../../data/raw/weather_uni_osnabrueck_train_set.csv', sep=';')
+
 
 # Formatage des dates
 from datetime import datetime
@@ -12,10 +13,7 @@ netteBad = netteBad.sort_values(by=['date'])
 weather_dwd = weather_dwd.sort_values(by=['date'])
 weather_osnabrueck = weather_osnabrueck.sort_values(by=['date'])
 
-# Gestion des données manquantes
-test = netteBad[netteBad['visitors_pool_total'].isin(['1482'])]
+print(type(netteBad.sportbad_closed[0]))
 
-test  = '5'
-type(test)
-int(test)
-type(test)
+# Gestion des données manquantes
+
