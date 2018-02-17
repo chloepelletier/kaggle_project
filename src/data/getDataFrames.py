@@ -31,6 +31,35 @@ def getPriceClasse(price_adult_90min, price_adult_max, price_reduced_90min, pric
     
 netteBad['Price'] = netteBad.apply(lambda row: getPriceClasse(row['price_adult_90min'], row['price_adult_max'], row['price_reduced_90min'], row['price_reduced_max']), axis=1)
 
+def getSunshineClasseDWD(sunshine_hours_DWD):
+    if sunshine_hours_DWD >= 0 and sunshine_hours_DWD < 3:
+        return 'S0'
+    if sunshine_hours_DWD >= 3 and sunshine_hours_DWD < 6:
+        return 'S1'
+    if sunshine_hours_DWD >= 6 and sunshine_hours_DWD < 9:
+        return 'S2'
+    if sunshine_hours_DWD >= 9 and sunshine_hours_DWD < 12:
+        return 'S3'
+    else :
+        return 'S4'
+
+weather_dwd['sunshine'] = weather_dwd.apply(lambda row: getSunshineClasseDWD(row['sunshine_hours_DWD']), axis=1)
+
+def getSunshineClasseOSNABRUECK(global_solar_radiation_UniOS):
+    if global_solar_radiation_UniOS >= 0 and global_solar_radiation_UniOS < 80:
+        return 'RS0'
+    if global_solar_radiation_UniOS >= 80 and global_solar_radiation_UniOS < 160:
+        return 'RS1'
+    if global_solar_radiation_UniOS >= 160 and global_solar_radiation_UniOS < 240:
+        return 'RS2'
+    if global_solar_radiation_UniOS >= 240 and global_solar_radiation_UniOS < 320:
+        return 'RS3'
+    else :
+        return 'RS4'
+
+weather_osnabrueck['sunshine_radiation'] = weather_osnabrueck.apply(lambda row: getSunshineClasseOSNABRUECK(row['global_solar_radiation_UniOS']), axis=1)
+
+
 # Suppression des colonnes inutiles pour le fichier nettebad 
 netteBad.drop('sloop_dummy', axis=1, inplace=True)
 netteBad.drop('price_adult_90min', axis=1, inplace=True)
