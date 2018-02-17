@@ -12,8 +12,24 @@ netteBad = netteBad.sort_values(by=['date'])
 weather_dwd = weather_dwd.sort_values(by=['date'])
 weather_osnabrueck = weather_osnabrueck.sort_values(by=['date'])
 
-# Suppression de la colonne sloop dummy inutile
+# Suppression des colonnes inutiles pour le fichier nettebad 
 netteBad.drop('sloop_dummy', axis=1, inplace=True)
+#a faire après la creation de la nouvelle colonne prix 
+netteBad.drop('price_adult_90min', axis=1, inplace=True)
+netteBad.drop('price_adult_max', axis=1, inplace=True)
+netteBad.drop('price_reduced_90min', axis=1, inplace=True)
+netteBad.drop('price_reduced_max', axis=1, inplace=True)
+
+#Suppression des colonnes inutiles dans weather_dwd
+weather_dwd.drop('air_humidity_DWD', axis=1, inplace=True)
+weather_dwd.drop('air_temperature_daily_max_DWD', axis=1, inplace=True)
+weather_dwd.drop('air_temperature_daily_min_DWD', axis=1, inplace=True)
+
+#Suppresion des colonnes inutiles dans weather_osnabrueck
+weather_osnabrueck.drop('air_humidity_UniOS', axis=1, inplace=True)
+weather_osnabrueck.drop('air_pressure_UniOS', axis=1, inplace=True)
+weather_osnabrueck.drop('wind_direction_category_UniOS', axis=1, inplace=True)
+
 
 # Regarde si les 2 df de weather se ressemblent
 weather_dwd['year'] = weather_dwd.date.apply(lambda x: x.year)
