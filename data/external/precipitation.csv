@@ -1,6 +1,6 @@
-Catégorie;Précipitation mini (mm);Précipitation maxi (mm) 
-Pas de pluie;0;2
-Pluie faible ;2;12
-Pluie modéré;12;48
-Pluie forte;48;96
-Pluie extreme ;96;
+Catégorie;Précipitation mini (mm);Précipitation maxi (mm) ;Commentaire 
+P0;0;2;Pas de pluie
+P1;2;12;Pluie faible 
+P2;12;48;Pluie modéré
+P3;48;96;Pluie forte
+P4;96;;Pluie extreme 

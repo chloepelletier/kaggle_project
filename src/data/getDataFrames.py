@@ -31,6 +31,30 @@ def getPriceClasse(price_adult_90min, price_adult_max, price_reduced_90min, pric
     
 netteBad['Price'] = netteBad.apply(lambda row: getPriceClasse(row['price_adult_90min'], row['price_adult_max'], row['price_reduced_90min'], row['price_reduced_max']), axis=1)
 
+#création des intervalles pour la hauteur de neige 
+def getSnowClasse(snow_height):
+    if snow_height == 0 :
+        return 'S0'
+    else :
+        return 'S1'
+    
+weather_dwd['snow_height_DWD'] = weather_dwd.apply(lambda row: getSnowClasse(row['snow_height_DWD']), axis=1)
+
+#création des intervalles pour la hauteur de neige 
+def getPrecipitationClasse(precipitation):
+    if precipitation>=0 and precipitation<2 :
+        return 'P0'
+    elif precipitation>=2 and precipitation<12 :
+        return 'P1'
+    elif precipitation>=12 and precipitation<48 :
+        return 'P2'
+    elif precipitation>=48 and precipitation<96 :
+        return 'P3'
+    else :
+        return 'P4'   
+    
+weather_dwd['precipitation_DWD'] = weather_dwd.apply(lambda row: getPrecipitationClasse(row['precipitation_DWD']), axis=1)
+
 # Suppression des colonnes inutiles pour le fichier nettebad 
 netteBad.drop('sloop_dummy', axis=1, inplace=True)
 netteBad.drop('price_adult_90min', axis=1, inplace=True)
