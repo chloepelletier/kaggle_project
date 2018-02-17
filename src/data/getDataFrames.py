@@ -12,27 +12,41 @@ netteBad = netteBad.sort_values(by=['date'])
 weather_dwd = weather_dwd.sort_values(by=['date'])
 weather_osnabrueck = weather_osnabrueck.sort_values(by=['date'])
 
-# Suppression de la colonne sloop dummy inutile
-netteBad.drop('sloop_dummy', axis=1, inplace=True)
-
 # Création d'intervalles
 def getPriceClasse(price_adult_90min, price_adult_max, price_reduced_90min, price_reduced_max):
     if price_adult_90min == 3.2 and price_adult_max == 6.7 and price_reduced_90min == 1.7 and price_reduced_max == 3.7:
-        return 'T1'
+        return 'P1'
     elif price_adult_90min == 4.3 and price_adult_max == 7.3 and price_reduced_90min == 2.3 and price_reduced_max == 4.3:
-        return 'T2'
+        return 'P2'
     elif price_adult_90min == 4.6 and price_adult_max == 7.6 and price_reduced_90min == 2.6 and price_reduced_max == 4.6:
-        return 'T3'
-    elif price_adult_90min == 3.2 and price_adult_max == 6.7 and price_reduced_90min == 1.7 and price_reduced_max == 3.7:
-        return 'T4'
-    elif price_adult_90min == 3.2 and price_adult_max == 6.7 and price_reduced_90min == 1.7 and price_reduced_max == 3.7:
-        return 'T5'
-    elif price_adult_90min == 3.2 and price_adult_max == 6.7 and price_reduced_90min == 1.7 and price_reduced_max == 3.7:
-        return 'T6'
+        return 'P3'
+    elif price_adult_90min == 4.6 and price_adult_max == 10 and price_reduced_90min == 2.8 and price_reduced_max == 8.3:
+        return 'P4'
+    elif price_adult_90min == 4.9 and price_adult_max == 10 and price_reduced_90min == 3.1 and price_reduced_max == 8.3:
+        return 'P5'
+    elif price_adult_90min == 5.2  and price_adult_max == 10 and price_reduced_90min == 3.3  and price_reduced_max == 8.3:
+        return 'P6'
     else :
-        return 'T0'
+        return 'P0'
     
-netteBad.apply(lambda row: getPriceClasse(row['price_adult_90min'], row['price_adult_max'], row['price_reduced_90min'], row['price_reduced_max']), axis=1)
+netteBad['Price'] = netteBad.apply(lambda row: getPriceClasse(row['price_adult_90min'], row['price_adult_max'], row['price_reduced_90min'], row['price_reduced_max']), axis=1)
+
+# Suppression des colonnes inutiles pour le fichier nettebad 
+netteBad.drop('sloop_dummy', axis=1, inplace=True)
+netteBad.drop('price_adult_90min', axis=1, inplace=True)
+netteBad.drop('price_adult_max', axis=1, inplace=True)
+netteBad.drop('price_reduced_90min', axis=1, inplace=True)
+netteBad.drop('price_reduced_max', axis=1, inplace=True)
+
+# Suppression des colonnes inutiles dans weather_dwd
+weather_dwd.drop('air_humidity_DWD', axis=1, inplace=True)
+weather_dwd.drop('air_temperature_daily_max_DWD', axis=1, inplace=True)
+weather_dwd.drop('air_temperature_daily_min_DWD', axis=1, inplace=True)
+
+# Suppresion des colonnes inutiles dans weather_osnabrueck
+weather_osnabrueck.drop('air_humidity_UniOS', axis=1, inplace=True)
+weather_osnabrueck.drop('air_pressure_UniOS', axis=1, inplace=True)
+weather_osnabrueck.drop('wind_direction_category_UniOS', axis=1, inplace=True)
 
 # Regarde si les 2 df de weather se ressemblent
 weather_dwd['year'] = weather_dwd.date.apply(lambda x: x.year)
