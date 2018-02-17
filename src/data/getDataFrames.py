@@ -15,6 +15,15 @@ weather_osnabrueck = weather_osnabrueck.sort_values(by=['date'])
 # Suppression de la colonne sloop dummy inutile
 netteBad.drop('sloop_dummy', axis=1, inplace=True)
 
+# Création d'intervalles
+def my_test(price_adult_90min, price_adult_max, price_reduced_90min, price_reduced_max):
+    if price_adult_90min == 3.2 and price_adult_max == 6.7 and price_reduced_90min == 1.7 and price_reduced_max == 3.7:
+        return 'T1'
+    else :
+        return 'T2'
+    
+netteBad.apply(lambda row: my_test(row['price_adult_90min'], row['price_adult_max'], row['price_reduced_90min'], row['price_reduced_max']), axis=1)
+
 # Regarde si les 2 df de weather se ressemblent
 weather_dwd['year'] = weather_dwd.date.apply(lambda x: x.year)
 weather_dwd['month'] = weather_dwd.date.apply(lambda x: x.month)
@@ -52,7 +61,6 @@ weather_osnabrueck.drop(['air_pressure_UniOS', 'global_solar_radiation_UniOS', '
 weather_osnabrueck.columns = ['date', 'air_humidity', 'temperature', 'wind_speed_max']
 
 weather = pd.concat([weather_dwd, weather_osnabrueck])
-
 
 result = pd.merge(netteBad, weather, on='date', how='outer')
 result = result.sort_values(by=['date'])
