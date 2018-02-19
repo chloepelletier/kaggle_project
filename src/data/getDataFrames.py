@@ -32,32 +32,91 @@ def getPriceClasse(price_adult_90min, price_adult_max, price_reduced_90min, pric
 netteBad['Price'] = netteBad.apply(lambda row: getPriceClasse(row['price_adult_90min'], row['price_adult_max'], row['price_reduced_90min'], row['price_reduced_max']), axis=1)
 
 def getSunshineClasseDWD(sunshine_hours_DWD):
-    if sunshine_hours_DWD >= 0 and sunshine_hours_DWD < 3:
-        return 'S0'
-    if sunshine_hours_DWD >= 3 and sunshine_hours_DWD < 6:
-        return 'S1'
-    if sunshine_hours_DWD >= 6 and sunshine_hours_DWD < 9:
-        return 'S2'
-    if sunshine_hours_DWD >= 9 and sunshine_hours_DWD < 12:
-        return 'S3'
+    if sunshine_hours_DWD >= 0 and sunshine_hours_DWD < 0:
+        return '0'
+    if sunshine_hours_DWD >= 0 and sunshine_hours_DWD < 4:
+        return '1'
+    if sunshine_hours_DWD >= 4 and sunshine_hours_DWD < 6:
+        return '2'
+    if sunshine_hours_DWD >= 6 and sunshine_hours_DWD < 8:
+        return '3'
     else :
-        return 'S4'
+        return '4'
 
 weather_dwd['sunshine'] = weather_dwd.apply(lambda row: getSunshineClasseDWD(row['sunshine_hours_DWD']), axis=1)
 
 def getSunshineClasseOSNABRUECK(global_solar_radiation_UniOS):
-    if global_solar_radiation_UniOS >= 0 and global_solar_radiation_UniOS < 80:
-        return 'RS0'
-    if global_solar_radiation_UniOS >= 80 and global_solar_radiation_UniOS < 160:
-        return 'RS1'
-    if global_solar_radiation_UniOS >= 160 and global_solar_radiation_UniOS < 240:
-        return 'RS2'
-    if global_solar_radiation_UniOS >= 240 and global_solar_radiation_UniOS < 320:
-        return 'RS3'
+    if global_solar_radiation_UniOS >= 0 and global_solar_radiation_UniOS < 25.43:
+        return '0'
+    if global_solar_radiation_UniOS >= 25.43 and global_solar_radiation_UniOS < 29.37:
+        return '1'
+    if global_solar_radiation_UniOS >= 29.37 and global_solar_radiation_UniOS < 36.54:
+        return '2'
+    if global_solar_radiation_UniOS >= 36.54 and global_solar_radiation_UniOS < 900:
+        return '3'
     else :
-        return 'RS4'
+        return '4'
 
 weather_osnabrueck['sunshine_radiation'] = weather_osnabrueck.apply(lambda row: getSunshineClasseOSNABRUECK(row['global_solar_radiation_UniOS']), axis=1)
+
+
+def getWindClasse(wind):
+    wind = wind * 3.6
+    if wind < 12:
+        return '1'
+    if wind >= 12 and wind < 29:
+        return '2'
+    if wind >= 29 and wind < 50:
+        return '3'
+    if wind >= 50 and wind < 89:
+        return '4'
+    else :
+        return '5'
+
+weather_osnabrueck['wind_speed_max_UniOS'] = weather_osnabrueck['wind_speed_max_UniOS'].apply(lambda x: x*0.2286828398051166+1.320735954229235)
+weather_osnabrueck['wind_speed_max_UniOS'] = weather_osnabrueck.apply(lambda row: getWindClasse(row['wind_speed_max_UniOS']), axis=1)
+weather_dwd['wind_speed_max_DWD'] = weather_dwd.apply(lambda row: getWindClasse(row['wind_speed_max_DWD']), axis=1)
+
+
+
+# Comparaison de l'ensoleillement weather
+weather_dwd['year'] = weather_dwd.date.apply(lambda x: x.year)
+weather_dwd['month'] = weather_dwd.date.apply(lambda x: x.month)
+weather_dwd['day'] = weather_dwd.date.apply(lambda x: x.day)
+weather_dwd = weather_dwd[((weather_dwd.year == 2009) & (weather_dwd.month.isin([7, 8, 9, 10, 11, 12]))) | ((weather_dwd.year == 2010) & (weather_dwd.month.isin([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))) ]
+weather_dwd = weather_dwd[['date', 'wind_speed_max_DWD']]
+
+
+weather_osnabrueck['year'] = weather_osnabrueck.date.apply(lambda x: x.year)
+weather_osnabrueck['month'] = weather_osnabrueck.date.apply(lambda x: x.month)
+weather_osnabrueck['day'] = weather_osnabrueck.date.apply(lambda x: x.day)
+weather_osnabrueck = weather_osnabrueck[((weather_osnabrueck.year == 2009) & (weather_osnabrueck.month.isin([7, 8, 9, 10, 11, 12]))) | ((weather_osnabrueck.year == 2010) & (weather_osnabrueck.month.isin([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))) ]
+weather_osnabrueck = weather_osnabrueck[['date', 'wind_speed_max_UniOS']]
+
+weather = pd.merge(weather_osnabrueck, weather_dwd, on='date', how='outer')
+weather = weather.sort_values(by=['date'])
+weather.drop(['date'], axis=1, inplace=True)
+
+from scipy import stats
+import numpy as np
+y = weather['wind_speed_max_DWD']
+x = weather['wind_speed_max_UniOS']
+slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
+
+weather.corr()
+weather['newMax'] = weather['wind_speed_max_UniOS'].apply(lambda x: x*slope+intercept)
+
+
+
+sameWindClasse = weather[weather.wind_speed_max_DWD == weather.wind_speed_avg_UniOS]
+sameWindClasse.shape[0] / weather.shape[0] * 100
+
+
+sameWindClasse1 = weather[weather.wind_speed_max_DWD.astype(float) - weather.wind_speed_avg_UniOS.astype(float) == 0]
+sameWindClasse3 = weather[weather.wind_speed_max_DWD.astype(float) - weather.wind_speed_avg_UniOS.astype(float) == 1]
+sameWindClasse2 = weather[weather.wind_speed_max_DWD.astype(float) - weather.wind_speed_avg_UniOS.astype(float) == -1]
+(sameWindClasse1.shape[0] + sameWindClasse2.shape[0] + sameWindClasse3.shape[0]) / weather.shape[0] * 100
+
 
 
 # Suppression des colonnes inutiles pour le fichier nettebad 
@@ -100,7 +159,6 @@ result['temperature'] = np.abs(result.temperature_1.astype('float') - result.tem
 result.temperature.mean()
 result.air_humidity.mean()
 result.wind_speed_max.mean()
-
 
 # Gestion des données manquantes et fusion des dataframes
 weather_dwd['year'] = weather_dwd.date.apply(lambda x: x.year)
