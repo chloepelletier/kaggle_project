@@ -12,7 +12,8 @@ netteBad = netteBad.sort_values(by=['date'])
 weather_dwd = weather_dwd.sort_values(by=['date'])
 weather_osnabrueck = weather_osnabrueck.sort_values(by=['date'])
 
-# Création d'intervalles
+
+# Création des intervalles : tarif
 def getPriceClasse(price_adult_90min, price_adult_max, price_reduced_90min, price_reduced_max):
     if price_adult_90min == 3.2 and price_adult_max == 6.7 and price_reduced_90min == 1.7 and price_reduced_max == 3.7:
         return 'P1'
@@ -30,6 +31,16 @@ def getPriceClasse(price_adult_90min, price_adult_max, price_reduced_90min, pric
         return 'P0'
     
 netteBad['Price'] = netteBad.apply(lambda row: getPriceClasse(row['price_adult_90min'], row['price_adult_max'], row['price_reduced_90min'], row['price_reduced_max']), axis=1)
+
+
+
+
+#Transformation des nb d'heure en radiation 
+def getRadiation(hour):
+    return hour*21.45+51.24
+
+weather_dwd['radiation'] = weather_dwd.apply(lambda row: getRadiation(row['sunshine_hours_DWD']), axis=1)
+weather_dwd.drop('sunshine_hours_DWD', axis=1, inplace=True)
 
 
 #création des intervalles pour la hauteur de neige 
@@ -56,34 +67,21 @@ def getPrecipitationClasse(precipitation):
     
 weather_dwd['precipitation_DWD'] = weather_dwd.apply(lambda row: getPrecipitationClasse(row['precipitation_DWD']), axis=1)
 
-def getSunshineClasseDWD(sunshine_hours_DWD):
-    if sunshine_hours_DWD >= 0 and sunshine_hours_DWD < 3:
-        return 'S0'
-    if sunshine_hours_DWD >= 3 and sunshine_hours_DWD < 6:
-        return 'S1'
-    if sunshine_hours_DWD >= 6 and sunshine_hours_DWD < 9:
-        return 'S2'
-    if sunshine_hours_DWD >= 9 and sunshine_hours_DWD < 12:
-        return 'S3'
-    else :
-        return 'S4'
 
-weather_dwd['sunshine'] = weather_dwd.apply(lambda row: getSunshineClasseDWD(row['sunshine_hours_DWD']), axis=1)
-
-def getSunshineClasseOSNABRUECK(global_solar_radiation_UniOS):
-    if global_solar_radiation_UniOS >= 0 and global_solar_radiation_UniOS < 80:
+    
+# Création d'intervalles : radiation solaire 
+def getSunshineClasse(global_solar_radiation_UniOS):
+    if global_solar_radiation_UniOS >= 0 and global_solar_radiation_UniOS < 100:
         return 'RS0'
-    if global_solar_radiation_UniOS >= 80 and global_solar_radiation_UniOS < 160:
+    if global_solar_radiation_UniOS >= 100 and global_solar_radiation_UniOS < 200:
         return 'RS1'
-    if global_solar_radiation_UniOS >= 160 and global_solar_radiation_UniOS < 240:
+    if global_solar_radiation_UniOS >= 200 and global_solar_radiation_UniOS < 300:
         return 'RS2'
-    if global_solar_radiation_UniOS >= 240 and global_solar_radiation_UniOS < 320:
-        return 'RS3'
     else :
-        return 'RS4'
+        return 'RS3'
 
-weather_osnabrueck['sunshine_radiation'] = weather_osnabrueck.apply(lambda row: getSunshineClasseOSNABRUECK(row['global_solar_radiation_UniOS']), axis=1)
-
+weather_osnabrueck['sunshine_radiation'] = weather_osnabrueck.apply(lambda row: getSunshineClasse(row['global_solar_radiation_UniOS']), axis=1)
+weather_dwd['sunshine_radiation'] = weather_dwd.apply(lambda row: getSunshineClasse(row['radiation']), axis=1)
 
 # Suppression des colonnes inutiles pour le fichier nettebad 
 netteBad.drop('sloop_dummy', axis=1, inplace=True)
