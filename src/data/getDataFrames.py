@@ -46,14 +46,10 @@ weather_dwd['snow_height_DWD'] = weather_dwd.apply(lambda row: getSnowClasse(row
 def getPrecipitationClasse(precipitation):
     if precipitation   >= 0  and precipitation < 2 :
         return 'P0'
-    elif precipitation >= 2  and precipitation < 12 :
+    elif precipitation >= 2  and precipitation < 8 :
         return 'P1'
-    elif precipitation >= 12 and precipitation < 48 :
-        return 'P2'
-    elif precipitation >= 48 and precipitation < 96 :
-        return 'P3'
     else :
-        return 'P4'   
+        return 'P2'   
     
 weather_dwd['precipitation_DWD'] = weather_dwd.apply(lambda row: getPrecipitationClasse(row['precipitation_DWD']), axis=1)
     
@@ -137,3 +133,5 @@ test_set.drop(['year', 'month'], axis=1, inplace=True)
 training_set.to_csv("data/processed/training_set.csv")
 validation_set.to_csv("data/processed/validation_set.csv")
 test_set.to_csv("data/processed/test_set.csv")
+
+

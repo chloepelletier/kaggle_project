@@ -310,22 +310,11 @@ stats.kruskal(training_set_w3.values, training_set_w4.values)[1] # > 0.05 Accept
 training_set_p0 = training_set[training_set.precipitation == 'P0'].visitors_pool_total.dropna(how='any')
 training_set_p1 = training_set[training_set.precipitation == 'P1'].visitors_pool_total.dropna(how='any')
 training_set_p2 = training_set[training_set.precipitation == 'P2'].visitors_pool_total.dropna(how='any')
-training_set_p3 = training_set[training_set.precipitation == 'P3'].visitors_pool_total.dropna(how='any')
-training_set_p4 = training_set[training_set.precipitation == 'P4'].visitors_pool_total.dropna(how='any')
 
 stats.kruskal(training_set_p0.values, training_set_p1.values)[1] # > 0.05 Accept NULL hypothesis - No significant difference between groups
 stats.kruskal(training_set_p0.values, training_set_p2.values)[1] # > 0.05 Accept NULL hypothesis - No significant difference between groups
-stats.kruskal(training_set_p0.values, training_set_p3.values)[1] # nan
-stats.kruskal(training_set_p0.values, training_set_p4.values)[1] # > 0.05 Accept NULL hypothesis - No significant difference between groups
 
 stats.kruskal(training_set_p1.values, training_set_p2.values)[1] # > 0.05 Accept NULL hypothesis - No significant difference between groups
-stats.kruskal(training_set_p1.values, training_set_p3.values)[1] # nan
-stats.kruskal(training_set_p1.values, training_set_p4.values)[1] # > 0.05 Accept NULL hypothesis - No significant difference between groups
-
-stats.kruskal(training_set_p2.values, training_set_p3.values)[1] # nan
-stats.kruskal(training_set_p2.values, training_set_p4.values)[1] # > 0.05 Accept NULL hypothesis - No significant difference between groups
-
-stats.kruskal(training_set_p3.values, training_set_p4.values)[1] # nan
 
 # SOLEIL
 training_set_rs0 = training_set[training_set.sunshine_radiation == 'RS0'].visitors_pool_total.dropna(how='any')
