@@ -1,3 +1,5 @@
+import pandas as pd
+
 netteBad           = pd.read_csv('data/raw/nettebad_train_set.csv', sep=';')
 weather_dwd        = pd.read_csv('data/raw/weather_dwd_train_set.csv', sep=';')
 weather_osnabrueck = pd.read_csv('data/raw/weather_uni_osnabrueck_train_set.csv', sep=';')
@@ -122,4 +124,16 @@ netteBad = netteBad.sort_values(by=['date'])
 netteBad['year']  = netteBad.date.apply(lambda x: x.year)
 netteBad['month'] = netteBad.date.apply(lambda x: x.month)
 netteBad          = netteBad[(netteBad.year != 2005) | (netteBad.month.isin(['4', '5', '6', '7', '8', '9', '10', '11', '12']))]
-netteBad.drop(['year', 'month'], axis=1, inplace=True)
+
+# Récupération des data frames de training/validation/test
+training_set    = netteBad[(netteBad.year != 2008) & (netteBad.year != 2011)]
+validation_set  = netteBad[netteBad.year == 2008]
+test_set        = netteBad[netteBad.year == 2011]
+
+training_set.drop(['year', 'month'], axis=1, inplace=True)
+validation_set.drop(['year', 'month'], axis=1, inplace=True)
+test_set.drop(['year', 'month'], axis=1, inplace=True)
+
+training_set.to_csv("data/processed/training_set.csv")
+validation_set.to_csv("data/processed/validation_set.csv")
+test_set.to_csv("data/processed/test_set.csv")
