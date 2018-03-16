@@ -150,7 +150,8 @@ validation_set['day'] = validation_set.apply(lambda row: divideWeekDays(row['day
 test_set['day']       = test_set.date.apply(lambda x: x.weekday())
 test_set['day']       = test_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
 
-training_set.to_csv("data/processed/training_set_bis.csv")
-validation_set.to_csv("data/processed/validation_set_bis.csv")
-test_set.to_csv("data/processed/test_set_bis.csv")
+training_set.to_csv("data/processed/training_set.csv")
+validation_set.to_csv("data/processed/validation_set.csv")
+test_set.to_csv("data/processed/test_set.csv")
+
 
