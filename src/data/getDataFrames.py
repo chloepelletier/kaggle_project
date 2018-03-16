@@ -87,25 +87,34 @@ def getWindClasse(wind):
         return '4'
     else :
         return '5'
-
+        
 weather_osnabrueck['wind_speed_max_UniOS'] = weather_osnabrueck['wind_speed_max_UniOS'].apply(lambda x: x*0.2286828398051166+1.320735954229235)
 weather_osnabrueck['wind_speed_max_UniOS'] = weather_osnabrueck.apply(lambda row: getWindClasse(row['wind_speed_max_UniOS']), axis=1)
 weather_dwd['wind_speed_max_DWD']          = weather_dwd.apply(lambda row: getWindClasse(row['wind_speed_max_DWD']), axis=1)
 
+# Création d'intervalles: jours fériés
+def bankHolidayToBinary(val):
+    if val == 0:
+        return 0
+    else:
+        return 1
+
+netteBad['bank_holiday'] = netteBad.apply(lambda row: bankHolidayToBinary(row['bank_holiday']), axis=1)
+
 # Suppression des colonnes inutiles pour le fichier nettebad 
-netteBad.drop(['sloop_dummy', 'price_adult_90min', 'price_adult_max', 'price_reduced_90min', 'price_reduced_max'], axis=1, inplace=True)
+netteBad.drop(['sloop_days_since_opening', 'price_adult_90min', 'price_adult_max', 'price_reduced_90min', 'price_reduced_max', 'sauna_closed', 'event', 'sloop_dummy', 'Price'], axis=1, inplace=True)
 
 # Suppression des colonnes inutiles dans weather_dwd + renommage
-weather_dwd.drop(['air_humidity_DWD', 'air_temperature_daily_max_DWD', 'air_temperature_daily_min_DWD', 'radiation'], axis=1, inplace=True)
-weather_dwd.columns = ['date', 'temperature', 'precipitation', 'snow_height', 'wind_speed_max', 'sunshine_radiation']
+weather_dwd.drop(['air_humidity_DWD', 'air_temperature_daily_max_DWD', 'air_temperature_daily_min_DWD', 'radiation', 'wind_speed_max_DWD', 'precipitation_DWD'], axis=1, inplace=True)
+weather_dwd.columns = ['date', 'temperature', 'snow_height', 'sunshine_radiation']
 
 # Suppresion des colonnes inutiles dans weather_osnabrueck + renommage
-weather_osnabrueck.drop(['air_humidity_UniOS', 'air_pressure_UniOS', 'global_solar_radiation_UniOS', 'wind_direction_category_UniOS', 'wind_speed_avg_UniOS'], axis=1, inplace=True)
-weather_osnabrueck.columns = ['date', 'temperature', 'wind_speed_max', 'sunshine_radiation']
+weather_osnabrueck.drop(['air_humidity_UniOS', 'air_pressure_UniOS', 'global_solar_radiation_UniOS', 'wind_direction_category_UniOS', 'wind_speed_avg_UniOS', 'wind_speed_max_UniOS'], axis=1, inplace=True)
+weather_osnabrueck.columns = ['date', 'temperature', 'sunshine_radiation']
 
 # Fusion de dataframes
-weather_dwd_2 = weather_dwd[['date', 'precipitation', 'snow_height']]
-weather_dwd.drop(['precipitation', 'snow_height'], axis=1, inplace=True)
+weather_dwd_2 = weather_dwd[['date', 'snow_height']]
+weather_dwd.drop(['snow_height'], axis=1, inplace=True)
 
 weather_dwd['year'] = weather_dwd.date.apply(lambda x: x.year)
 weather_dwd         = weather_dwd[weather_dwd.year < 2010]
@@ -126,12 +135,22 @@ training_set    = netteBad[(netteBad.year != 2008) & (netteBad.year != 2011)]
 validation_set  = netteBad[netteBad.year == 2008]
 test_set        = netteBad[netteBad.year == 2011]
 
-training_set.drop(['year', 'month'], axis=1, inplace=True)
-validation_set.drop(['year', 'month'], axis=1, inplace=True)
-test_set.drop(['year', 'month'], axis=1, inplace=True)
+def divideWeekDays(day):
+    if day == 0 or day == 1 or day == 2 or day == 3 or day == 4:
+        return 0
+    if day == 5:
+        return 1
+    else:
+        return 2
+    
+training_set['day']   = training_set.date.apply(lambda x: x.weekday())
+training_set['day']   = training_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
+validation_set['day'] = validation_set.date.apply(lambda x: x.weekday())
+validation_set['day'] = validation_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
+test_set['day']       = test_set.date.apply(lambda x: x.weekday())
+test_set['day']       = test_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
 
-training_set.to_csv("data/processed/training_set.csv")
-validation_set.to_csv("data/processed/validation_set.csv")
-test_set.to_csv("data/processed/test_set.csv")
-
+training_set.to_csv("data/processed/training_set_bis.csv")
+validation_set.to_csv("data/processed/validation_set_bis.csv")
+test_set.to_csv("data/processed/test_set_bis.csv")
 

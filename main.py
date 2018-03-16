@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import sklearn as skl
 from datetime import datetime
-
 from matplotlib import pyplot as ppl
 
 import src.data.getDataFrames
@@ -87,7 +86,5 @@ netteBad.price_adult_max.astype(str).str.split('.').apply(lambda x: x[0])
 def getElement(myList, position): 
     return myList[position]
 netteBad.price_adult_max.astype(str).str.split('.').apply(getElement, position=0)
-
-# PLOT TUTO
 
 
