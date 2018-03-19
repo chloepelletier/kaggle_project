@@ -3,12 +3,11 @@ import pandas as pd
 import numpy as np
 
 training_set = pd.read_csv('data/processed/training_set_bis.csv')
-training_set.drop(['Unnamed: 0','date', 'year', 'month'], axis=1, inplace=True)
+training_set.drop(['Unnamed: 0','date', 'year'], axis=1, inplace=True)
 training_set.dropna(how='any', inplace=True)
 
 validation_set = pd.read_csv('data/processed/validation_set_bis.csv')
-valide = validation_set.visitors_pool_total
-validation_set.drop(['Unnamed: 0','date', 'year','month','visitors_pool_total'], axis=1, inplace=True)
+validation_set.drop(['Unnamed: 0','date', 'year'], axis=1, inplace=True)
 validation_set.dropna(how='any', inplace=True)
 
 # Remplacer les str par int pour les variables ordinale
@@ -26,14 +25,17 @@ validation_set.wind_speed_max = pd.factorize(validation_set['wind_speed_max'])[0
 
 # Create a list of the feature column's names
 y = training_set.visitors_pool_total.values.astype(int)
-training_set.drop(['visitors_pool_total'], axis=1, inplace=True)
+
+feature = ['day','month','sportbad_closed', 'freizeitbad_closed','kursbecken_closed','sauna_closed',
+           'sloop_dummy','school_holiday', 'bank_holiday','temperature', 'wind_speed_max',
+           'snow_height']
+
 
 feature = ['sportbad_closed', 'freizeitbad_closed',
        'sauna_closed', 'kursbecken_closed', 'event', 'sloop_dummy',
        'school_holiday', 'bank_holiday', 'Price', 'precipitation',
        'sunshine_radiation', 'temperature', 'wind_speed_max', 'snow_height',
        'day', 'day_bis']
-
 # Random Forest Classifier
 clf = RandomForestClassifier(n_jobs=2, random_state=0)
 
@@ -44,7 +46,7 @@ clf.fit(training_set[feature], y)
 result = clf.predict(validation_set[feature])
 
 from sklearn.metrics import mean_squared_error
-np.sqrt(mean_squared_error(valide.values.astype(int), result))
+np.sqrt(mean_squared_error(validation_set.visitors_pool_total.values.astype(int), result))
 
 
 

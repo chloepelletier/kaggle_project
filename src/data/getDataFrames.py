@@ -102,8 +102,8 @@ def bankHolidayToBinary(val):
 netteBad['bank_holiday'] = netteBad.apply(lambda row: bankHolidayToBinary(row['bank_holiday']), axis=1)
 
 # Suppression des colonnes inutiles pour le fichier nettebad 
-netteBad.drop(['sloop_days_since_opening', 'price_adult_90min', 'price_adult_max', 'price_reduced_90min', 'price_reduced_max', 'sauna_closed', 'event', 'sloop_dummy', 'Price'], axis=1, inplace=True)
-#netteBad.drop(['sloop_days_since_opening', 'price_adult_90min', 'price_adult_max', 'price_reduced_90min', 'price_reduced_max'], axis=1, inplace=True)
+#netteBad.drop(['sloop_days_since_opening', 'price_adult_90min', 'price_adult_max', 'price_reduced_90min', 'price_reduced_max', 'sauna_closed', 'event', 'sloop_dummy', 'Price'], axis=1, inplace=True)
+netteBad.drop(['sloop_days_since_opening', 'price_adult_90min', 'price_adult_max', 'price_reduced_90min', 'price_reduced_max'], axis=1, inplace=True)
 
 # Suppression des colonnes inutiles dans weather_dwd + renommage
 #weather_dwd.drop(['air_humidity_DWD', 'air_temperature_daily_max_DWD', 'air_temperature_daily_min_DWD', 'radiation', 'wind_speed_max_DWD', 'precipitation_DWD'], axis=1, inplace=True)
