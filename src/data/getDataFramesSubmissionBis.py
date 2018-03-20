@@ -1,13 +1,13 @@
 import pandas as pd
 
-netteBad           = pd.read_csv('data/raw/nettebad_train_set.csv', sep=';')
-weather_dwd        = pd.read_csv('data/raw/weather_dwd_train_set.csv', sep=';')
-weather_osnabrueck = pd.read_csv('data/raw/weather_uni_osnabrueck_train_set.csv', sep=';')
+netteBad           = pd.read_csv('data/raw/nettebad_test_set.csv', sep=';')
+weather_dwd        = pd.read_csv('data/raw/weather_dwd_test_set.csv', sep=';')
+weather_osnabrueck = pd.read_csv('data/raw/weather_uni_osnabrueck_test_set.csv', sep=';')
 
 # Formatage des dates
 netteBad.date           = pd.to_datetime(netteBad.date, format='%m/%d/%Y')
 weather_dwd.date        = pd.to_datetime(weather_dwd.date, format='%m/%d/%Y')
-weather_osnabrueck.date = pd.to_datetime(weather_osnabrueck.date, format='%d/%m/%Y')
+weather_osnabrueck.date = pd.to_datetime(weather_osnabrueck.date, format='%m/%d/%Y')
 
 netteBad           = netteBad.sort_values(by=['date'])
 weather_dwd        = weather_dwd.sort_values(by=['date'])
@@ -135,11 +135,6 @@ netteBad['year']  = netteBad.date.apply(lambda x: x.year)
 netteBad['month'] = netteBad.date.apply(lambda x: x.month)
 netteBad          = netteBad[(netteBad.year != 2005) | (netteBad.month.isin(['4', '5', '6', '7', '8', '9', '10', '11', '12']))]
 
-# Récupération des data frames de training/validation/test
-training_set    = netteBad[(netteBad.year != 2008) & (netteBad.year != 2011)]
-validation_set  = netteBad[netteBad.year == 2008]
-test_set        = netteBad[netteBad.year == 2011]
-
 def divideWeekDays(day):
     if day == 0 or day == 1 or day == 2 or day == 3 or day == 4:
         return 0
@@ -150,24 +145,14 @@ def divideWeekDays(day):
     
 #training_set['day']   = training_set.date.apply(lambda x: x.weekday())
 #training_set['day']   = training_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
-#validation_set['day'] = validation_set.date.apply(lambda x: x.weekday())
-#validation_set['day'] = validation_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
-#test_set['day']       = test_set.date.apply(lambda x: x.weekday())
-#test_set['day']       = test_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
-training_set['day']   = training_set.date.apply(lambda x: x.weekday())
-training_set['day_bis']   = training_set.date.apply(lambda x: x.weekday())
-training_set['day']   = training_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
-validation_set['day'] = validation_set.date.apply(lambda x: x.weekday())
-validation_set['day_bis'] = validation_set.date.apply(lambda x: x.weekday())
-validation_set['day'] = validation_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
-test_set['day']       = test_set.date.apply(lambda x: x.weekday())
-test_set['day_bis']       = test_set.date.apply(lambda x: x.weekday())
-test_set['day']       = test_set.apply(lambda row: divideWeekDays(row['day']), axis=1)
 
-#training_set.to_csv("data/processed/training_set.csv")
-#validation_set.to_csv("data/processed/validation_set.csv")
-#test_set.to_csv("data/processed/test_set.csv")
-training_set.to_csv("data/processed/training_set_bis.csv")
-validation_set.to_csv("data/processed/validation_set_bis.csv")
-test_set.to_csv("data/processed/test_set_bis.csv")
+netteBad['day']   = netteBad.date.apply(lambda x: x.weekday())
+netteBad['day_bis']   = netteBad.date.apply(lambda x: x.weekday())
+netteBad['day']   = netteBad.apply(lambda row: divideWeekDays(row['day']), axis=1)
+
+netteBad  = netteBad[netteBad.year == 2013]
+
+#netteBad.to_csv("data/processed/submission.csv")
+netteBad.to_csv("data/processed/submission_bis.csv")
+
 
