@@ -5,6 +5,7 @@ training_set = pd.read_csv('data/processed/training_set_bis.csv')
 training_set.drop(['Unnamed: 0','date', 'year'], axis=1, inplace=True)
 training_set.dropna(how='any', inplace=True)
 
+
 validation_set = pd.read_csv('data/processed/validation_set_bis.csv')
 validation_set.drop(['Unnamed: 0','date', 'year'], axis=1, inplace=True)
 validation_set.dropna(how='any', inplace=True)
@@ -26,6 +27,7 @@ y = training_set.visitors_pool_total.values.astype(int)
 
 feature = ['sportbad_closed', 'freizeitbad_closed','sauna_closed', 'kursbecken_closed', 'event', 'sloop_dummy','school_holiday', 'bank_holiday', 'Price', 'precipitation','sunshine_radiation', 'temperature', 'wind_speed_max', 'snow_height','day', 'day_bis']
 feature = ['sloop_dummy','month', 'day_bis', 'sportbad_closed', 'freizeitbad_closed', 'kursbecken_closed',  'school_holiday',  'bank_holiday', 'temperature',  'snow_height']
+
 
 # SVR
 clf = svm.LinearSVR(loss='squared_epsilon_insensitive', max_iter=160, dual=False)

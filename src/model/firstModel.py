@@ -32,7 +32,7 @@ validation_set.wind_speed_max = pd.factorize(validation_set['wind_speed_max'])[0
 
 # Create a list of the feature column's names
 y = training_set.visitors_pool_total.values.astype(int)
-training_set.drop(['visitors_pool_total'], axis=1, inplace=True)
+
 
 feature = ['sportbad_closed', 'freizeitbad_closed','sauna_closed', 'kursbecken_closed', 'event', 'sloop_dummy','school_holiday', 'bank_holiday', 'Price', 'sunshine_radiation', 'temperature', 'wind_speed_max', 'snow_height','day', 'day_bis']
 feature = ['month', 'sportbad_closed', 'freizeitbad_closed', 'kursbecken_closed', 'sloop_dummy', 'school_holiday',  'bank_holiday', 'temperature',  'snow_height', 'day_bis']
@@ -45,7 +45,6 @@ clf.fit(training_set[feature], y)
 
 # Prediction
 result = clf.predict(validation_set[feature])
-
 
 # Si l'on veut mettre un seuil pour choisir automatiquement les features à utiliser
 #selector = SelectFromModel(clf, threshold=.01)
