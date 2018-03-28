@@ -1,5 +1,5 @@
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.neural_network import MLPRegressor
 from sklearn.metrics import mean_squared_error
 import pandas as pd
 import numpy as np
@@ -10,10 +10,8 @@ training_set.dropna(how='any', inplace=True)
 
 validation_set = pd.read_csv('data/processed/validation_set_bis.csv')
 validation_set.drop(['Unnamed: 0','date', 'year', 'precipitation'], axis=1, inplace=True)
-#validation_set.drop(['Unnamed: 0','date', 'visitors_pool_total', 'precipitation', 'year'], axis=1, inplace=True)
 validation_set.dropna(how='any', inplace=True)
 valide = validation_set.visitors_pool_total
-
 
 # Remplacer les str par int pour les variables ordinale
 training_set.snow_height = pd.factorize(training_set['snow_height'])[0]
@@ -41,14 +39,19 @@ scaler.fit(training_set[feature])
 X_train = scaler.transform(training_set[feature])
 X_test = scaler.transform(validation_set[feature])
 
-# Random Forest Regression
-regr = RandomForestRegressor(random_state=0, n_jobs=-1, max_depth=9, min_samples_split= 20, min_samples_leaf= 3)
+# without preprocessing
+X_train = training_set[feature]
+X_test = validation_set[feature]
+
+# Multi Layer Perceptron Classifier
+# http://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html#sklearn.neural_network.MLPRegressor
+mlp = MLPRegressor(hidden_layer_sizes=(13,13,13),max_iter=500)
 
 # Entrainement
-regr.fit(X_train, y)
+mlp.fit(X_train, y)
 
 # Prediction
-result = regr.predict(X_test)
+result = mlp.predict(X_test)
 
 # Tests
 np.sqrt(mean_squared_error(valide.values.astype(int), result))
