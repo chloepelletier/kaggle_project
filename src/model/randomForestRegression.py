@@ -30,7 +30,6 @@ validation_set.wind_speed_max = pd.factorize(validation_set['wind_speed_max'])[0
 y = training_set.visitors_pool_total.values.astype(int)
 training_set.drop(['visitors_pool_total'], axis=1, inplace=True)
 
-feature = ['sportbad_closed', 'freizeitbad_closed','sauna_closed', 'kursbecken_closed', 'event', 'sloop_dummy','school_holiday', 'bank_holiday', 'Price','sunshine_radiation', 'temperature', 'wind_speed_max', 'snow_height','day', 'day_bis']
 feature = ['month', 'sportbad_closed', 'freizeitbad_closed', 'kursbecken_closed', 'sloop_dummy', 'school_holiday',  'bank_holiday', 'temperature',  'snow_height', 'day_bis']
 
 # preprocessing
@@ -52,6 +51,3 @@ result = regr.predict(X_test)
 
 # Tests
 np.sqrt(mean_squared_error(valide.values.astype(int), result))
-
-
-
