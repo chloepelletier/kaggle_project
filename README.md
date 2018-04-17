@@ -1,9 +1,9 @@
 # kaggle_project
-## Subject
+## Sujet
 Swimming Pool Visitor Forecasting / Prévision de la fréquentation d’une piscine
 
 
-## Kaggle Link
+## Lien Kaggle
 https://www.kaggle.com/c/swimming-pool-visitor-forecasting
 
 
